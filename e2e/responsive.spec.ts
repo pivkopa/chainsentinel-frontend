@@ -58,4 +58,23 @@ test.describe("ChainSentinel Responsive Layout", () => {
         const box = await modal.boundingBox();
         expect(box?.width).toBeLessThanOrEqual(390); // iPhone 13 width
     });
+
+    test("should display tablet layout correctly", async ({ page }) => {
+        // Use iPad Mini
+        await page.setViewportSize(devices["iPad Mini"].viewport);
+        await page.goto("/");
+
+        // Verify header title is visible
+        await expect(page.locator("text=CHAINSENTINEL")).toBeVisible();
+
+        // Verify layout elements
+        await expect(page.locator("text=Profile Settings")).toBeVisible();
+        await expect(page.locator("text=Deploy Sentinel")).toBeVisible();
+
+        // On tablet, we expect more space
+        const modal = page.locator(".bg-zinc-900.border.border-zinc-800.rounded-3xl");
+        await page.click("text=Deploy Sentinel");
+        const box = await modal.boundingBox();
+        expect(box?.width).toBeGreaterThan(390); // Should be wider than mobile
+    });
 });
